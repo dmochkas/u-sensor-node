@@ -1,0 +1,1 @@
+set(PROFILE_NAME "push_pull_ping_s" CACHE STRING "Profile name (look profiles/)")
