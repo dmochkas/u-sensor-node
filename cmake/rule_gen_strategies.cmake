@@ -1,0 +1,10 @@
+function(config_rule_gen_strategy strategy)
+	string(REGEX MATCH "^([0-9]+)-([0-9]+)-instances$" _match "${strategy}")
+	if(NOT _match)
+		message(FATAL_ERROR "Invalid rule generation strategy '${strategy}'. Expected '<number>-<number>-instances'.")
+	endif()
+
+    set(N_INSTANCES_ENABLED ON PARENT_SCOPE)
+	set(MSB_SIZE ${CMAKE_MATCH_1} PARENT_SCOPE)
+	set(N_INSTANCES ${CMAKE_MATCH_2} PARENT_SCOPE)
+endfunction()
