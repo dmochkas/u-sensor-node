@@ -4,6 +4,16 @@
 
 #include "utils.h"
 
+static int schc_compose_rule_id_n_instances(uint8_t msb_size, uint8_t n_instances, uint8_t rule_id) {
+    for (int i = 0; i < n_instances; ++i) {
+
+    }
+}
+
+int schc_compose_rule_id() {
+
+}
+
 // Warning: assumes rule id of 1 byte
 int extract_schc_message(const uint8_t* bytes, size_t len, schc_message_t* msg_out) {
     if (len < 1 || len > SCHC_MAX_PAYLOAD_SIZE + 1) {
