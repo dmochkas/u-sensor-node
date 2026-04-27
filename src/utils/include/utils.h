@@ -8,8 +8,8 @@
 #define BYTE_MAX 255
 
 #define MIN(a,b) ((a) < (b) ? (a) : (b))
-#define BITS_TO_BYTES(bits) ((bits + (BYTE_BITS - 1)) / BYTE_BITS)
-#define BYTES_TO_BITS(bytes) (bytes * BYTE_BITS)
+#define BITS_TO_BYTES(bits) (((bits) + (BYTE_BITS - 1)) / BYTE_BITS)
+#define BYTES_TO_BITS(bytes) ((bytes) * BYTE_BITS)
 
 typedef enum param_type {
     TYPE_STRING, TYPE_INT, TYPE_UINT8

@@ -6,6 +6,7 @@
 #include <time.h>
 #include <unistd.h>
 
+#include "logging.h"
 #include "core.h"
 #include "schc_base.h"
 #include "schc_table.h"
@@ -55,17 +56,24 @@ static int send_schc_payload(uint8_t src, uint8_t dst, const schc_message_t *sch
 
 static void send_push_message(void)
 {
-    // TODO: For now hardcoded
-    static const schc_rule_id_t push_rule_bases[] = {0x01, 0x1D, 0x02};
+    // TODO: For now hardcoded, no more than 2 bytes
+    static const schc_rule_id_t push_rule_bases[] = {0x01, 0x1D};
 
     schc_rule_id_t rule_id = push_rule_bases[push_rr_idx];
     schc_message_t schc_push = {0};
     if (schc_get_message(&rule_id, &schc_push) < 0) {
-        // TODO: Log error
+        zlog_warn(error_cat, "Lookup table entry not found");
         return;
     }
     (void)send_schc_payload(NODE_ID, GATEWAY_ID, &schc_push);
-    printf("SCHC push 0x%02x sent\n", push_rule_bases[push_rr_idx]);
+
+    char hex[16] = {0};
+    size_t n;
+    if (bytes_to_hex_string(schc_push.payload, BITS_TO_BYTES(schc_push.pl_size_bits), hex, sizeof(hex), &n) < 0) {
+        zlog_error(error_cat, "bytes_to_hex_string internal error");
+        return;
+    }
+    zlog_info(ok_cat, "SCHC push sent: rule_id=0x%02x, payload=0x%s", rule_id, hex);
 
     push_rr_idx = (push_rr_idx + 1u) % (sizeof(push_rule_bases) / sizeof(push_rule_bases[0]));
 }
@@ -77,23 +85,29 @@ static void try_response(const mats_lt_src_dst_packet_t *request)
         return;
     }
 
-    const schc_message_t* schc_resp = NULL;
-    int st = schc_accept_message(&schc_msg, &schc_resp);
+    schc_message_t schc_peer = {0};
+
+    int st = schc_accept_message(&schc_msg, &schc_peer);
     switch (st) {
         // Incoming message is a request
         case 1:
-            if (schc_resp == NULL) {
-                // TODO: Error unsupported request
-                return;
-            }
-            (void)send_schc_payload(request->dst, request->src, schc_resp);
+            (void)send_schc_payload(request->dst, request->src, &schc_peer);
             break;
         // Incoming message is a response
-        case 2:
-            // TODO: Log
+        case 2: {
+            char hex[16] = {0};
+            size_t n;
+            if (bytes_to_hex_string(schc_msg.payload, BITS_TO_BYTES(schc_msg.pl_size_bits), hex, sizeof(hex), &n) < 0) {
+                zlog_error(error_cat, "bytes_to_hex_string internal error");
+                return;
+            }
+            zlog_info(ok_cat, "SCHC response received: req_rule_id=0x%02x, resp_rule_id=0x%02x, payload=0x%s",
+                      schc_peer.rule_id, schc_msg.rule_id, hex);
             break;
+        }
         default:
-            // TODO: Internal error
+            zlog_error(error_cat, "Lookup table internal error");
+            break;
     }
 }
 
@@ -107,6 +121,11 @@ static void on_packet_received(mats_lt_src_dst_packet_t *pkt) {
 }
 
 int main(void) {
+    if (logger_init() != LOGGER_INIT_OK) {
+        perror("logger_init");
+        return -1;
+    }
+
     struct pollfd fds = {
         .fd = -1,
         .events = POLLIN,
@@ -115,21 +134,23 @@ int main(void) {
 
     g_fd = mats_lt_connect(SERIAL_PORT, B115200);
     if (g_fd < 0) {
-        perror("open_serial_port");
+        zlog_error(error_cat, "Open serial port error");
         return -1;
     }
 
     fds.fd = g_fd;
-//    set_ahoi_id(g_fd, NODE_ID);
     set_msg_handler(on_packet_received);
 
     if (schc_lu_table_init() < 0) {
-        perror("schc_lu_table_init");
+        zlog_error(error_cat, "SCHC lookup table init error");
+        close(g_fd);
         return -1;
     }
 
     uint64_t push_interval_ms = PUSH_INTERVAL_S * 1000LL;
     uint64_t next_push_ms = monotonic_ms() + push_interval_ms;
+
+    zlog_info(ok_cat, "Sensor init ok. Entering event loop...");
 
     while (1) {
         int timeout_ms = (int) (next_push_ms - monotonic_ms());
@@ -143,7 +164,7 @@ int main(void) {
                 continue;
             }
 
-            perror("poll");
+            zlog_error(error_cat, "Poll internal error");
             break;
         }
 
@@ -152,7 +173,7 @@ int main(void) {
         }
 
         if (fds.revents & (POLLERR | POLLHUP | POLLNVAL)) {
-            fprintf(stderr, "serial port error\n");
+            zlog_error(error_cat, "Serial port error");
             break;
         }
 
@@ -166,5 +187,5 @@ int main(void) {
     }
 
     close(g_fd);
-    return 0;
+    return -1;
 }
