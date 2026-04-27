@@ -55,15 +55,17 @@ static int send_schc_payload(uint8_t src, uint8_t dst, const schc_message_t *sch
 
 static void send_push_message(void)
 {
-    static const schc_rule_id_t push_rule_bases[] = {0x01, 0x02};
+    // TODO: For now hardcoded
+    static const schc_rule_id_t push_rule_bases[] = {0x01, 0x1D, 0x02};
 
-    schc_rule_id_t rule_id = COMPOSE_RULE_ID(push_rule_bases[push_rr_idx]);
-    const schc_message_t *schc_push = NULL;
-    schc_get_message(&rule_id, &schc_push);
-    if (schc_push != NULL) {
-        (void)send_schc_payload(NODE_ID, GATEWAY_ID, schc_push);
-        printf("SCHC push 0x%02x sent\n", push_rule_bases[push_rr_idx]);
+    schc_rule_id_t rule_id = push_rule_bases[push_rr_idx];
+    schc_message_t schc_push = {0};
+    if (schc_get_message(&rule_id, &schc_push) < 0) {
+        // TODO: Log error
+        return;
     }
+    (void)send_schc_payload(NODE_ID, GATEWAY_ID, &schc_push);
+    printf("SCHC push 0x%02x sent\n", push_rule_bases[push_rr_idx]);
 
     push_rr_idx = (push_rr_idx + 1u) % (sizeof(push_rule_bases) / sizeof(push_rule_bases[0]));
 }

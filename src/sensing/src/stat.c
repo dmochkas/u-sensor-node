@@ -17,6 +17,15 @@ int stat_get(uint8_t* bytes, size_t max_len, size_t* len_out) {
     return 1;
 }
 
+int stat_get_sent(uint8_t* bytes, size_t max_len, size_t* len_out) {
+    if (max_len < 1) {
+        return -1;
+    }
+    bytes[0] = stat_data.n_send;
+    *len_out = 1;
+    return 1;
+}
+
 void stat_inc_recv() {
     stat_data.n_recv++;
 }

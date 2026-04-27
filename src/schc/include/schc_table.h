@@ -30,4 +30,4 @@ int schc_lu_table_init();
 
 int schc_accept_message(const schc_message_t* msg_in, const schc_message_t** msg_out);
 
-void schc_get_message(const schc_rule_id_t* rule_id, const schc_message_t** msg_out);
+int schc_get_message(const schc_rule_id_t* rule_id, schc_message_t* msg_out);

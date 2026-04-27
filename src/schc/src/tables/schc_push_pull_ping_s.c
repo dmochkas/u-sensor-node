@@ -14,7 +14,7 @@ int schc_lu_table_init() {
 
     lu_table.entries[0] = (schc_lu_entry_t) {
             .req_msg = (schc_message_t) {
-                    .rule_id = COMPOSE_RULE_ID(0x01),
+                    .rule_id = 0x01,
             },
             .get_payload = temp_sense
     };
@@ -22,7 +22,7 @@ int schc_lu_table_init() {
 
     lu_table.entries[1] = (schc_lu_entry_t) {
             .req_msg = (schc_message_t) {
-                    .rule_id = COMPOSE_RULE_ID(0x02),
+                    .rule_id = 0x02,
             },
             .get_payload = state_sense
     };
@@ -31,30 +31,39 @@ int schc_lu_table_init() {
     /* Pull messages */
 
     lu_table.entries[2].req_msg = (schc_message_t) {
-            .rule_id = COMPOSE_RULE_ID(0x0A),
+            .rule_id = 0x0A,
     };
     lu_table.entries[2].resp_msg = (schc_message_t) {
-            .rule_id = COMPOSE_RULE_ID(0x03),
+            .rule_id = 0x03,
     };
     lu_table.entries[2].get_payload = stat_get;
     lu_table.n_entries++;
 
     lu_table.entries[3].req_msg = (schc_message_t) {
-            .rule_id = COMPOSE_RULE_ID(0x0B),
+            .rule_id = 0x0B,
     };
     lu_table.entries[3].resp_msg = (schc_message_t) {
-            .rule_id = COMPOSE_RULE_ID(0x04),
+            .rule_id = 0x04,
     };
     lu_table.entries[3].get_payload = temp_sense;
     lu_table.n_entries++;
 
     lu_table.entries[4].req_msg = (schc_message_t) {
-            .rule_id = COMPOSE_RULE_ID(0x0C),
+            .rule_id = 0x0C,
     };
     lu_table.entries[4].resp_msg = (schc_message_t) {
-            .rule_id = COMPOSE_RULE_ID(0x05),
+            .rule_id = 0x05,
     };
     lu_table.entries[4].get_payload = state_sense;
+    lu_table.n_entries++;
+
+    lu_table.entries[5].req_msg = (schc_message_t) {
+            .rule_id = 0x0D,
+    };
+    lu_table.entries[5].resp_msg = (schc_message_t) {
+            .rule_id = 0x06,
+    };
+    lu_table.entries[5].get_payload = stat_get_sent;
     lu_table.n_entries++;
 
     return 1;
