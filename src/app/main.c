@@ -57,7 +57,7 @@ static int send_schc_payload(uint8_t src, uint8_t dst, const schc_message_t *sch
 static void send_push_message(void)
 {
     // TODO: For now hardcoded, no more than 2 bytes
-    static const schc_rule_id_t push_rule_bases[] = {0x01, 0x1D};
+    static const schc_rule_id_t push_rule_bases[] = {0x01, 0x2D};
 
     schc_rule_id_t rule_id = push_rule_bases[push_rr_idx];
     schc_message_t schc_push = {0};
