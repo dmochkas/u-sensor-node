@@ -132,7 +132,7 @@ int main(void) {
         .revents = 0,
     };
 
-    g_fd = mats_lt_connect(SERIAL_PORT, B115200);
+    g_fd = mats_lt_connect(SERIAL_PORT, B38400);
     if (g_fd < 0) {
         zlog_error(error_cat, "Open serial port error");
         return -1;

@@ -2,6 +2,8 @@
 
 #include <regex.h>
 #include <errno.h>
+#include <string.h>
+#include <stdlib.h>
 
 int regex_match(const char* str, const char* pattern) {
     int ret = -1;
@@ -131,7 +133,7 @@ int hex_string_to_bytes(const char *hex, uint8_t *out, size_t max_size, size_t *
 }
 
 int bytes_to_hex_string(const uint8_t *bytes, size_t bytes_size, char *hex, size_t max_size, size_t *out_size) {
-    static const char digits[] = "0123456789abcdef";
+    static const char digits[] = "0123456789ABCDEF";
     if (hex == NULL || out_size == NULL) {
         return -1;
     }
