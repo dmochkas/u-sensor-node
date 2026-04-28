@@ -16,7 +16,7 @@ int schc_lu_table_init() {
             .req_msg = (schc_message_t) {
                     .rule_id = 0x01,
             },
-            .get_payload = temp_sense
+            .get_req_payload = temp_sense
     };
     lu_table.n_entries++;
 
@@ -24,7 +24,7 @@ int schc_lu_table_init() {
             .req_msg = (schc_message_t) {
                     .rule_id = 0x02,
             },
-            .get_payload = state_sense
+            .get_req_payload = state_sense
     };
     lu_table.n_entries++;
 
@@ -36,7 +36,7 @@ int schc_lu_table_init() {
     lu_table.entries[2].resp_msg = (schc_message_t) {
             .rule_id = 0x03,
     };
-    lu_table.entries[2].get_payload = stat_get;
+    lu_table.entries[2].get_resp_payload = stat_get;
     lu_table.n_entries++;
 
     lu_table.entries[3].req_msg = (schc_message_t) {
@@ -45,7 +45,7 @@ int schc_lu_table_init() {
     lu_table.entries[3].resp_msg = (schc_message_t) {
             .rule_id = 0x03,
     };
-    lu_table.entries[3].get_payload = temp_sense;
+    lu_table.entries[3].get_resp_payload = temp_sense;
     lu_table.n_entries++;
 
     lu_table.entries[4].req_msg = (schc_message_t) {
@@ -54,7 +54,7 @@ int schc_lu_table_init() {
     lu_table.entries[4].resp_msg = (schc_message_t) {
             .rule_id = 0x03,
     };
-    lu_table.entries[4].get_payload = state_sense;
+    lu_table.entries[4].get_resp_payload = state_sense;
     lu_table.n_entries++;
 
     lu_table.entries[5].req_msg = (schc_message_t) {
@@ -63,7 +63,7 @@ int schc_lu_table_init() {
     lu_table.entries[5].resp_msg = (schc_message_t) {
             .rule_id = 0x03,
     };
-    lu_table.entries[5].get_payload = stat_get_sent;
+    lu_table.entries[5].get_resp_payload = stat_get_sent;
     lu_table.n_entries++;
 
     return 1;

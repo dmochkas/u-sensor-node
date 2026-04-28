@@ -17,7 +17,8 @@ typedef struct schc_lu_entry {
 //    schc_entry_type_t type;
     schc_message_t req_msg;
     schc_message_t resp_msg;
-    payload_producer_t get_payload;
+    payload_producer_t get_req_payload;
+    payload_producer_t get_resp_payload;
     payload_validator_t validate_payload;
 } schc_lu_entry_t;
 
