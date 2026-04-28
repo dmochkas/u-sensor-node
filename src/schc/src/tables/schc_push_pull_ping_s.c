@@ -43,7 +43,7 @@ int schc_lu_table_init() {
             .rule_id = 0x0B,
     };
     lu_table.entries[3].resp_msg = (schc_message_t) {
-            .rule_id = 0x04,
+            .rule_id = 0x03,
     };
     lu_table.entries[3].get_payload = temp_sense;
     lu_table.n_entries++;
@@ -52,7 +52,7 @@ int schc_lu_table_init() {
             .rule_id = 0x0C,
     };
     lu_table.entries[4].resp_msg = (schc_message_t) {
-            .rule_id = 0x05,
+            .rule_id = 0x03,
     };
     lu_table.entries[4].get_payload = state_sense;
     lu_table.n_entries++;
@@ -61,7 +61,7 @@ int schc_lu_table_init() {
             .rule_id = 0x0D,
     };
     lu_table.entries[5].resp_msg = (schc_message_t) {
-            .rule_id = 0x06,
+            .rule_id = 0x03,
     };
     lu_table.entries[5].get_payload = stat_get_sent;
     lu_table.n_entries++;
