@@ -92,7 +92,7 @@ static int mats_lt_send_cmd(int fd, const char* cmd, const char* expected_regex,
 
     usleep(100 * 1000);
     char resp[MATS_LT_MAX_RESP_SIZE];
-    ssize_t n = io_read_until_ch(fd, &(buffer_t){MATS_LT_MAX_RESP_SIZE - 1, (uint8_t*) resp}, '\r');
+    ssize_t n = io_read_until_match(fd, &(buffer_t){MATS_LT_MAX_RESP_SIZE - 1, (uint8_t*) resp}, "[\r\n]");
     if (n < 0) {
         return -1;
     }
@@ -122,7 +122,7 @@ static int mats_lt_restart(int fd) {
     if (read(fd, (uint8_t[1]){}, 1) != 1) {
         goto finish;
     }
-    ssize_t n = io_read_until_ch(fd, &(buffer_t){MATS_LT_MAX_RESP_SIZE - 1, (uint8_t*) resp}, '\r');
+    ssize_t n = io_read_until_match(fd, &(buffer_t){MATS_LT_MAX_RESP_SIZE - 1, (uint8_t*) resp}, "[\r\n]");
     if (n < 0) {
         goto finish;
     }
@@ -178,7 +178,7 @@ static int mats_lt_set_protocol(int fd, mats_lt_protocol_cfg_t p) {
         goto finish;
     }
 
-    if (mats_lt_send_cmd(fd, set_protocol_cmd, MATS_LT_OK_RESPONSE) < 0) {
+    if (mats_lt_send_cmd(fd, set_protocol_cmd, MATS_LT_OK_RESPONSE_REGEX) < 0) {
         goto finish;
     }
 
@@ -323,15 +323,16 @@ static int mats_lt_src_dst_decode(reader_t* r, mats_lt_src_dst_packet_t* pkt) {
 static int mats_lt_handle_ack(int fd) {
     int ret = -1;
 
-    static size_t ack_len = strlen(MATS_LT_SENT_RESPONSE);
-    char send_ack[ack_len];
+    static const size_t ack_len = 6;
+    char send_ack[ack_len + 1];
     ssize_t n = read(fd, send_ack, ack_len);
     if (n != ack_len) {
         ret = -1;
         goto finish;
     }
+    send_ack[ack_len] = '\0';
 
-    if (strncmp(MATS_LT_SENT_RESPONSE, send_ack, ack_len) != 0) {
+    if (regex_match(send_ack, MATS_LT_SENT_RESPONSE_REGEX) != 0) {
         ret = -1;
         goto finish;
     }

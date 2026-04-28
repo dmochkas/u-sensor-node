@@ -3,6 +3,8 @@
 #include <unistd.h>
 #include <string.h>
 
+#include "utils.h"
+
 int mem_read(reader_t *r, void *dst, size_t n)
 {
     if (r->pos >= r->buffer->length)
@@ -52,6 +54,27 @@ long io_read_until_ch(int fd, buffer_t* b, char target) {
 
         b->value[total++] = ch;
         if (ch == target) {
+            return (ssize_t) total;
+        }
+    }
+
+    return -1;
+}
+
+long io_read_until_match(int fd, buffer_t* b, char* regex) {
+    size_t total = 0;
+    char ch[2] = {0};
+    while (total < b->length) {
+        ssize_t n = read(fd, ch, 1);
+        if (n < 0) {
+            return -1;
+        }
+        if (n == 0) {
+            break;
+        }
+
+        b->value[total++] = ch[0];
+        if (regex_match(ch, regex) == 0) {
             return (ssize_t) total;
         }
     }

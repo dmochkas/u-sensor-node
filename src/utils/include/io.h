@@ -30,3 +30,5 @@ int mem_read(reader_t *r, void *dst, size_t n);
 int mem_write(writer_t *w, const buffer_t *src, size_t n);
 
 long io_read_until_ch(int fd, buffer_t* b, char target);
+
+long io_read_until_match(int fd, buffer_t* b, char* regex);

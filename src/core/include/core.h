@@ -8,17 +8,17 @@
 #define MATS_LT_RESTART_COMMAND "*RESTART\r"
 #define MATS_LT_RESET_COMMAND "*RESET\r"
 #define MATS_LT_UPGRADE_COMMAND "*UPGRADE\r"
-#define MATS_LT_OK_RESPONSE "#OK\r"
+#define MATS_LT_OK_RESPONSE_REGEX "#OK[\r\n]"
 
-#define MATS_LT_ACK_RESPONSE "#ACK\r"
-#define MATS_LT_SENT_RESPONSE "#SENT\r"
+#define MATS_LT_ACK_RESPONSE_REGEX "#ACK[\r\n]"
+#define MATS_LT_SENT_RESPONSE_REGEX "#SENT[\r\n]"
 // ACOUSTIC_MODEM V1.0.11 TDMA,AUV
 // ACOUSTIC_MODEM V1.0.11 SRC-DEST
-#define MATS_LT_RESTART_RESPONSE_REGEX "ACOUSTIC_MODEM (V[^,]+) ([[:alnum:],-]+)\r"
-#define MATS_LT_GET_RESPONSE_REGEX "#=([^\r\n]+)\r"
+#define MATS_LT_RESTART_RESPONSE_REGEX "ACOUSTIC_MODEM (V[^,]+) ([[:alnum:],-]+)[\r\n]"
+#define MATS_LT_GET_RESPONSE_REGEX "#=([^\r\n]+)[\r\n]"
 
 #define MATS_LT_SEND_SRC_DST_PKT_FMT "*TRA,%d,%d,%d,%s,"
-#define MATS_LT_RECV_SRC_DST_PKT_REGEX "\\*RCV,([0-9]+),([0-9]+),([0-9]+),([[:xdigit:]]+),!([[:xdigit:]]{4})\r"
+#define MATS_LT_RECV_SRC_DST_PKT_REGEX "\\*RCV,([0-9]+),([0-9]+),([0-9]+),([[:xdigit:]]+),!([[:xdigit:]]{4})[\r\n]"
 
 #define MATS_LT_PROTOCOL_PARAM_ADDR "0"
 #define MATS_LT_BAUD_PARAM_ADDR "1"
