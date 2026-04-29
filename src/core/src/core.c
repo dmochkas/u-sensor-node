@@ -260,6 +260,7 @@ static int mats_lt_src_dst_decode(reader_t* r, mats_lt_src_dst_packet_t* pkt) {
 
     uint8_t* start = r->buffer->value + r->pos;
     uint8_t* end = memchr(start, '\r', r->buffer->length - r->pos);
+    end = end == NULL ? memchr(start, '\n', r->buffer->length - r->pos) : end;
     if (end == NULL) {
         return 0;
     }
