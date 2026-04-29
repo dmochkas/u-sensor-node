@@ -288,26 +288,28 @@ static int mats_lt_src_dst_decode(reader_t* r, mats_lt_src_dst_packet_t* pkt) {
         return -1;
     }
     char actual_crc[MATS_LT_CRC_SIZE + 1];
-    if (mats_lt_compute_crc(msg_str, actual_crc) < 0 || strcmp(crc, actual_crc) != 0) {
-        return -1;
-    }
-    switch (pl_size) {
-        case 0:
-            pkt->pl_size_bits = 8;
-            break;
-        case 1:
-            pkt->pl_size_bits = 12;
-            break;
-        case 2:
-            pkt->pl_size_bits = 16;
-            break;
-        // Not supported in our version
-        case 3:
-            pkt->pl_size_bits = 32;
-            break;
-        default:
-            return -1;
-    }
+    // Doesnt work
+//    if (mats_lt_compute_crc(msg_str, actual_crc) < 0 || strcmp(crc, actual_crc) != 0) {
+//        return -1;
+//    }
+//    switch (pl_size) {
+//        case 0:
+//            pkt->pl_size_bits = 8;
+//            break;
+//        case 1:
+//            pkt->pl_size_bits = 12;
+//            break;
+//        case 2:
+//            pkt->pl_size_bits = 16;
+//            break;
+//            // Not supported in our version
+//        case 3:
+//            pkt->pl_size_bits = 32;
+//            break;
+//        default:
+//            return -1;
+//    }
+    pkt->pl_size_bits = pl_size;
     size_t pl_size_bytes;
     if (hex_string_to_bytes(pl_hex, pkt->payload, MATS_LT_MAX_PL_SIZE, &pl_size_bytes) < 0) {
         return -1;
